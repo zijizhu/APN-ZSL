@@ -1,6 +1,6 @@
 #!/bin/bash
 CUDA_VISIBLE_DEVICES=0 python ./model/main.py \
---dataset CUB \
+--dataset CUB --image_root $PWD/datasets/ \
 --calibrated_stacking 0.7 \
 --cuda --nepoch 30 --batch_size 64 --train_id 0 --manualSeed 4896 \
 --pretrain_epoch 4  --pretrain_lr 1e-4 --classifier_lr 1e-6 \

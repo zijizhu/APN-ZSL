@@ -1,0 +1,6 @@
+data
+pretrained_models
+datasets
+__pycache__
+*.gz
+*.tar

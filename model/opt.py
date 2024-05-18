@@ -81,3 +81,6 @@ def get_opt():
     opt.checkpointroot = opt.root + 'checkpoint'
     print('opt:', opt)
     return opt
+
+if __name__ == '__main__':
+    args = get_opt()
