@@ -74,7 +74,8 @@ class resnet_proto_IoU(nn.Module):
 
         # 01 - load resnet to model1
         if opt.resnet_path != None:
-            state_dict = torch.load(opt.resnet_path)
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            state_dict = torch.load(opt.resnet_path, map_location=device)
             resnet.load_state_dict(state_dict)
             # print("resnet load state dict from {}".format(opt.resnet_path))
 
