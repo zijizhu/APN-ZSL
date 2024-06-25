@@ -126,10 +126,15 @@ def main():
         # test zsl
         if not opt.gzsl:
             acc_ZSL = test_zsl(opt, model, testloader_unseen, attribute_zsl, data.unseenclasses)
-            test_with_IoU(opt=opt, model=model, testloader=testloader_unseen,
-                          attribute=attribute_zsl, test_classes=data.unseenclasses,
-                          save_att="visualizations", group_dic=group_dic, sub_group_dic=sub_group_dic)
+            body_avg_IoU, mean_IoU = test_with_IoU(opt=opt, model=model, testloader=testloader_unseen,
+                                                   attribute=attribute_zsl, test_classes=data.unseenclasses,
+                                                   save_att="visualizations", group_dic=group_dic,
+                                                   sub_group_dic=sub_group_dic)
             print('ZSL test accuracy is {:.1f}%'.format(acc_ZSL))
+            print("body_avg_IoU:")
+            print(body_avg_IoU)
+            print("mean_IoU:")
+            print(mean_IoU)
         else:
             # test gzsl
             acc_GZSL_unseen = test_gzsl(opt, model, testloader_unseen, attribute_gzsl, data.unseenclasses)
