@@ -5,6 +5,7 @@ wget -O pretrained_models.tar.gz -q --show-progress "https://www.dropbox.com/scl
 tar -xzf pretrained_models.tar.gz
 
 mkdir out
+mkdir visualizations
 
 mkdir -p datasets
 cd datasets

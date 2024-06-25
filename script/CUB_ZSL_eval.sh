@@ -1,5 +1,5 @@
 #!/bin/bash
-CUDA_VISIBLE_DEVICES=1 python ./model/main.py \
+CUDA_VISIBLE_DEVICES=0 python ./model/main.py \
 --dataset CUB \
 --calibrated_stacking 0.7 \
 --cuda --nepoch 30 --batch_size 64 --train_id 0 --manualSeed 4896 \
