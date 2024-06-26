@@ -375,7 +375,7 @@ def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, layer_names, groups,
 
                 group_save_dict[group_dim] = mask
         img_save_dict[group_name] = group_save_dict
-    with open(f"{save_dir}.pkl", "rb") as fp:
+    with open(f"{save_dir}.pkl", "wb") as fp:
         pickle.dump(img_save_dict, fp)
     return img_IoU
 
