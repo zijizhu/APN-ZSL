@@ -322,7 +322,7 @@ def get_KP_BB(gt_point, mask_h, mask_w, bird_BB, KNOW_BIRD_BB=False):
     return {'x1': KP_x1, 'x2': KP_x2, 'y1': KP_y1, 'y2': KP_y2}
 
 
-def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, names, groups,
+def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, layer_names, groups,
                   attri_names, KPs, bird_BB, scale, resize_WH, KNOW_BIRD_BB):
     BB_parts = ['head', 'breast', 'belly', 'back', 'wing', 'tail', 'leg']
     # {'x1': KP_x1, 'x2': KP_x2, 'y1': KP_y1, 'y2': KP_y2}
@@ -346,6 +346,7 @@ def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, names, groups,
         mask_w = max(int(mask_h / 2), mask_w)
 
     img_IoU = {}
+    img_save_dict = {}
     for group_name, group_dims in groups.items():
         # print("group_name, group_dims:", group_name, group_dims)
         if group_name == 'others':
@@ -354,8 +355,9 @@ def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, names, groups,
         img_IoU[group_name] = []
         # if the body part exist:
         # generate the iou for each attention map from each subgroup
+        group_save_dict = {}
         for group_dim in group_dims:
-            for j, name in enumerate(names):
+            for j, name in enumerate(layer_names):
                 mask = maps[name][idx, group_dim, :, :]
                 mask = cv2.resize(mask, (224, 224))
                 mask_BB_dict, (mask_c_x, mask_c_y) = generate_mask_BB(mask, bird_BB, scale, KNOW_BIRD_BB)
@@ -370,10 +372,15 @@ def get_IoU_Image(idx, imgs, maps, save_dir, save_att_idx, names, groups,
                 # print("KP_BB_dict", KP_BB_dict, mask_BB_dict)
                 IoU = get_iou(KP_BB_dict, mask_BB_dict)
                 img_IoU[group_name].append(IoU)
+
+                group_save_dict[group_dim] = mask
+        img_save_dict[group_name] = group_save_dict
+    with open(f"{save_dir}.pkl", "rb") as fp:
+        pickle.dump(img_save_dict, fp)
     return img_IoU
 
 
-def calculate_atten_IoU(input, impath, save_att_idx, maps, names, vis_groups, KP_root=None, save_att=False, scale=4,
+def calculate_atten_IoU(input, impath, save_att_idx, maps, layer_names, vis_groups, KP_root=None, save_att=False, scale=4,
                         resize_WH=False, KNOW_BIRD_BB=False):
     """
     :param input: input image
@@ -401,7 +408,8 @@ def calculate_atten_IoU(input, impath, save_att_idx, maps, names, vis_groups, KP
         tmp = path.split('/')[-2:]
         this_dir = os.path.join(KP_root, tmp[0], tmp[1][:-4])
         if save_att:
-            save_dir = os.path.join(save_att, tmp[0], tmp[1][:-4])
+            os.makedirs(os.path.join(save_att, tmp[0]), exist_ok=True)
+            save_dir = os.path.join(save_att, tmp[0], tmp[1].split(".")[0])
         else:
             save_dir = False
         # KP_BBs, bird_BB = read_BB(this_dir)
@@ -409,7 +417,7 @@ def calculate_atten_IoU(input, impath, save_att_idx, maps, names, vis_groups, KP
         # print("this dir:", this_dir)
         # time_2 = time.time()
         # print('time for load BB:', time_2 - time_1)
-        img_IoU = get_IoU_Image(i, img_raw_show, maps, save_dir, save_att_idx, names, vis_group, attri_names,
+        img_IoU = get_IoU_Image(i, img_raw_show, maps, save_dir, save_att_idx, layer_names, vis_group, attri_names,
                                 KPs, bird_BB, scale, resize_WH, KNOW_BIRD_BB)
         # time_3 = time.time()
         # print('time for calculate IoU:', time_3 - time_2)

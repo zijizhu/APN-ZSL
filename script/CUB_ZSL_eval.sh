@@ -1,6 +1,6 @@
 #!/bin/bash
 CUDA_VISIBLE_DEVICES=0 python ./model/main.py \
---dataset CUB --image_root datasets/ \
+--dataset CUB --image_root datasets/ --IoU_scale 4 --resize_WH --out_of_edge --max_area_center --KNOW_BIRD_BB \
 --calibrated_stacking 0.7 \
 --cuda --nepoch 30 --batch_size 64 --train_id 0 --manualSeed 4896 \
 --pretrain_epoch 4  --pretrain_lr 1e-4 --classifier_lr 1e-6 \
@@ -9,5 +9,3 @@ CUDA_VISIBLE_DEVICES=0 python ./model/main.py \
 --cpt 1e-9 --use_group \
 --train_mode 'distributed' --n_batch 300 --ways 8 --shots 3 \
 --only_evaluate --resume './out/CUB_ZSL_id_0.pth' \
-
-
